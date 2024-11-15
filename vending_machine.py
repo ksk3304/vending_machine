@@ -46,6 +46,7 @@ class VendingMachine:
             if selected_product["stock"] == 0:
                 raise Exception(f"{product}の在庫がありません。")
             self.suica.decrease_balance(selected_product["juice"].price)
+            self.total_sales += selected_product["juice"].price
             selected_product["stock"] -= 1
             for i in self.product_list:
                 if i["juice"].name == product:

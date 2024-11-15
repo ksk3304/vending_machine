@@ -39,22 +39,18 @@ class VendingMachine:
 
     def purchase(self, suica, product):
         self.suica = suica
-        self.product = [i for i in self.product_list if i["juice"].name == product][0]
+        selected_product = next((i for i in self.product_list if i["juice"].name == product), None)
         try:
-            if self.suica.balance < self.product["juice"].price:
+            if self.suica.balance < selected_product["juice"].price:
                 raise Exception(f"Suicaのチャージ残高が不足しております。")
-            if self.product["stock"] == 0:
+            if selected_product["stock"] == 0:
                 raise Exception(f"{product}の在庫がありません。")
-            balance = self.suica.balance
-            balance -= self.product["juice"].price
-            self.suica.balance = balance
-            total_sales = self.total_sales
-            total_sales += self.product["juice"].price
-            self.total_sales = total_sales
-            self.product["stock"] -= 1
+            self.suica.decrease_balance(selected_product["juice"].price)
+            self.total_sales += selected_product["juice"].price
+            selected_product["stock"] -= 1
             for i in self.product_list:
                 if i["juice"].name == product:
-                    i["stock"] = self.product["stock"]
-                    return f"{i["juice"].name}の購入が完了しました。"
+                    i["stock"] = selected_product["stock"]
+                    return f"{i['juice'].name}の購入が完了しました。"
         except Exception as e:
             return e

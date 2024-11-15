@@ -15,11 +15,10 @@ class Suica:
             return f"チャージが完了しました。現在のチャージ残高:{self._balance}円"
         except Exception as e:
             return e
+        
+    def decrease_balance(self, price):
+        self._balance -= price
 
     @property
     def balance(self):
         return self._balance
-
-    @balance.setter
-    def balance(self, balance):
-        self._balance = balance
